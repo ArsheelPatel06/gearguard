@@ -1,0 +1,105 @@
+### 1. Variables
+@baseUrl = http://localhost:5000/api
+
+### 2. Create Teams (Run this first!)
+POST {{baseUrl}}/teams
+Content-Type: application/json
+
+{
+    "name": "Mechanics",
+    "members": ["John Doe", "Mike Ross"]
+}
+
+###
+POST {{baseUrl}}/teams
+Content-Type: application/json
+
+{
+    "name": "IT Support",
+    "members": ["Elliot Alderson", "Moss"]
+}
+
+
+### 3. Get Teams (Copy an ID from here for the Equipment step)
+GET {{baseUrl}}/teams
+
+
+### 4. Create Equipment
+# REPLACE 'maintenanceTeamId' with one of the IDs from step 3
+POST {{baseUrl}}/equipment
+Content-Type: application/json
+
+{
+    "name": "Industrial Printer 5000",
+    "serialNumber": "PRT-5000-X",
+    "department": "Printing",
+    "location": "Room 101",
+    "maintenanceTeamId": "REPLACE_WITH_TEAM_ID", 
+    "status": "active"
+}
+
+
+### 5. Get AI Suggestion (Form Auto-fill)
+POST {{baseUrl}}/ai/suggest
+Content-Type: application/json
+
+{
+    "subject": "Printer making grinding noise",
+    "description": "It usually happens when printing heavy stock paper."
+}
+
+### 6. Chat with the Bot (New!)
+POST {{baseUrl}}/ai/chat
+Content-Type: application/json
+
+{
+    "message": "Hi, I need help"
+}
+
+###
+POST {{baseUrl}}/ai/chat
+Content-Type: application/json
+
+{
+    "message": " The printer is making a loud grinding noise"
+}
+
+
+### 7. Create Maintenance Request (Corrective)
+# Use the Equipment ID from Step 4 or the seed data
+POST {{baseUrl}}/request
+Content-Type: application/json
+
+{
+    "type": "corrective",
+    "subject": "Printer making grinding noise",
+    "description": "Loud noise during operation",
+    "equipmentId": "REPLACE_WITH_EQUIPMENT_ID",
+    "teamId": "REPLACE_WITH_TEAM_ID",
+    "assignedTo": "Mike Ross",
+    "aiSuggestion": {
+        "diagnosis": "Worn rollers",
+        "action": "Check rollers",
+        "estimatedTime": "45 mins"
+    }
+}
+
+### 8. Get All Requests (Kanban Board Data)
+GET {{baseUrl}}/request
+
+### 9. Update Request (Move to 'In Progress')
+PUT {{baseUrl}}/request/REPLACE_WITH_REQUEST_ID
+Content-Type: application/json
+
+{
+    "stage": "in_progress"
+}
+
+### 10. SCRAP Logic Test
+# Moving to 'scrap' should auto-update the equipment status
+PUT {{baseUrl}}/request/REPLACE_WITH_REQUEST_ID
+Content-Type: application/json
+
+{
+    "stage": "scrap"
+}
